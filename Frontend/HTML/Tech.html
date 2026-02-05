@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Technical Events</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg,#e6e9ff,#f6f7ff);
+}
+
+.container {
+    width: 420px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.section {
+    background: #f2f3ff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 18px;
+}
+
+.section-number {
+    background: #4c4af5;
+    color: white;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.radio-group {
+    margin-top: 10px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+button {
+    width: 48%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.back {
+    background: #e0e0e0;
+}
+
+.next {
+    background: #4c4af5;
+    color: white;
+}
+
+.next:hover {
+    background: #3a38d6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1 style="color:black ">Algo<span style="color:red">रंग</span></h1>
+<h3>Technical Events</h3>
+<p>
+Day 1 – Logic League <br>
+Day 2 – Tech Arena & Neuro Nexus <br>
+(Maximum Team Members: 4)
+</p>
+
+
+<div class="section">
+<span class="section-number">8</span>
+<label>Select events you want to take part in *</label>
+
+<div class="radio-group">
+    <input type="radio" name="subEvent" value="Logic League" required> Logic League<br>
+    <input type="radio" name="subEvent" value="Tech Arena"> Tech Arena<br>
+    <input type="radio" name="subEvent" value="Neuro Nexus"> Neuro Nexus
+</div>
+</div>
+
+
+<div class="section">
+<span class="section-number">9</span>
+<label>Number of team members *</label>
+
+<div class="radio-group">
+    <input type="radio" name="teamSize" value="1" checked> 1<br>
+    <input type="radio" name="teamSize" value="2"> 2<br>
+    <input type="radio" name="teamSize" value="3"> 3<br>
+    <input type="radio" name="teamSize" value="4"> 4
+</div>
+</div>
+
+
+<div id="members"></div>
+
+<div class="buttons">
+<button class="back" onclick="goBack()">Back</button>
+<button class="next" onclick="submitTech()">Next</button>
+</div>
+
+</div>
+
+<script>
+const membersDiv = document.getElementById("members");
+
+function renderMembers(count) {
+    membersDiv.innerHTML = "";
+    for (let i = 1; i <= count; i++) {
+        membersDiv.innerHTML += `
+        <div class="section">
+            <span class="section-number">${9 + i}</span>
+            <label>Member ${i} Name</label>
+            <input type="text" id="member${i}">
+        </div>`;
+    }
+}
+
+document.querySelectorAll('input[name="teamSize"]').forEach(radio => {
+    radio.addEventListener("change", e => {
+        renderMembers(e.target.value);
+    });
+});
+
+renderMembers(1);
+
+function goBack() {
+    window.location.href = "index.html";
+}
+
+function submitTech() {
+    const baseData = JSON.parse(localStorage.getItem("registrationData"));
+
+    const subEvent = document.querySelector('input[name="subEvent"]:checked')?.value;
+    const teamSize = document.querySelector('input[name="teamSize"]:checked').value;
+
+    if (!subEvent) {
+        alert("Please select a technical event");
+        return;
+    }
+
+    let members = [];
+    for (let i = 1; i <= teamSize; i++) {
+        members.push(document.getElementById("member" + i).value);
+    }
+
+    baseData.subEvent = subEvent;
+    baseData.teamSize = teamSize;
+    baseData.members = members;
+
+    localStorage.setItem("registrationData", JSON.stringify(baseData));
+
+
+    window.location.href = "payment.html";
+}
+</script>
+<script src="../JS/main.js"></script>
+</body>
+</html>

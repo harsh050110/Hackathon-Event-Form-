@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Game Events</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg,#e6e9ff,#f6f7ff);
+}
+.container {
+    width: 420px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+}
+.section {
+    background: #f2f3ff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 18px;
+}
+.section-number {
+    background: #4c4af5;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 8px;
+}
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+.radio-group {
+    margin-top: 10px;
+}
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+button {
+    width: 48%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.back { background: #e0e0e0; }
+.next { background: #4c4af5; color: white; }
+.next:hover { background: #3a38d6; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1 style="color:black ">Algo<span style="color:red">रंग</span></h1>
+<h3>Game Events</h3>
+<p>Day 1- Relay Race, Esports (Free Fire, BGMI)<br>
+Day 2- UNO Mania, SQUID Game</p>
+
+<div class="section">
+<span class="section-number">8</span>
+<label> Select events you want to take part in
+(For multiple events submit new response for each)*</label>
+
+<div class="radio-group">
+    <input type="radio" name="subEvent" value="BGMI" required> BGMI<br>
+    <input type="radio" name="subEvent" value="Valorant"> Valorant<br>
+    <input type="radio" name="subEvent" value="FIFA"> FIFA<br>
+    <input type="radio" name="subEvent" value="Chess"> Chess
+</div>
+</div>
+
+<div class="section">
+<span class="section-number">9</span>
+<label>Number of team members *</label>
+<div class="radio-group">
+    <input type="radio" name="teamSize" value="1" checked> 1<br>
+    <input type="radio" name="teamSize" value="2"> 2<br>
+    <input type="radio" name="teamSize" value="4"> 4
+</div>
+</div>
+
+<div id="members"></div>
+
+<div class="buttons">
+<button class="back" onclick="goBack()">Back</button>
+<button class="next" onclick="submitGame()">Next</button>
+</div>
+
+</div>
+
+<script>
+const membersDiv = document.getElementById("members");
+
+function renderMembers(count) {
+    membersDiv.innerHTML = "";
+    for (let i = 1; i <= count; i++) {
+        membersDiv.innerHTML += `
+        <div class="section">
+            <span class="section-number">${9 + i}</span>
+            <label>Player ${i} Name</label>
+            <input type="text" id="member${i}">
+        </div>`;
+    }
+}
+renderMembers(1);
+
+document.querySelectorAll('input[name="teamSize"]').forEach(r => {
+    r.addEventListener("change", e => renderMembers(e.target.value));
+});
+
+function goBack() {
+    window.location.href = "index.html";
+}
+
+function submitGame() {
+    const data = JSON.parse(localStorage.getItem("registrationData"));
+    const subEvent = document.querySelector('input[name="subEvent"]:checked')?.value;
+    const teamSize = document.querySelector('input[name="teamSize"]:checked').value;
+
+    if (!subEvent) return alert("Select game");
+
+    let members = [];
+    for (let i = 1; i <= teamSize; i++) {
+        members.push(document.getElementById("member" + i).value);
+    }
+
+    data.subEvent = subEvent;
+    data.teamSize = teamSize;
+    data.members = members;
+
+    localStorage.setItem("registrationData", JSON.stringify(data));
+    window.location.href = "payment.html";
+}
+</script>
+<script src="../JS/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Payment</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg,#e6e9ff,#f6f7ff);
+}
+
+.container {
+    width: 420px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.section {
+    background: #f2f3ff;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 18px;
+}
+
+.section-number {
+    background: #4c4af5;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 12px;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.qr {
+    width: 200px;
+    margin: 15px auto;
+    border-radius: 8px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+button {
+    width: 48%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.back {
+    background: #e0e0e0;
+}
+
+.submit {
+    background: #4c4af5;
+    color: white;
+}
+
+.submit:hover {
+    background: #3a38d6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h3>Payment</h3>
+<p>Please scan the QR code and complete the payment</p>
+
+
+<div class="section">
+<span class="section-number">1</span>
+<label>Scan QR Code *</label>
+
+<img src="images/payment-qr.png" alt="QR Code" class="qr">
+
+<p><small>After payment, enter your UTR number below</small></p>
+</div>
+
+<div class="section">
+<span class="section-number">2</span>
+<label>UTR Number *</label>
+<input type="text" id="utr" placeholder="Enter UTR number">
+</div>
+
+<div class="buttons">
+<button class="back" onclick="goBack()">Back</button>
+<button class="submit" onclick="finalSubmit()">Submit</button>
+</div>
+
+</div>
+
+<script>
+function goBack() {
+    window.history.back();
+}
+
+function finalSubmit() {
+    const utr = document.getElementById("utr").value.trim();
+    if (!utr) {
+        alert("Please enter UTR number");
+        return;
+    }
+
+    const data = JSON.parse(localStorage.getItem("registrationData"));
+    data.utrNumber = utr;
+    data.paymentStatus = "PAID";
+
+    fetch("http://localhost:8080/api/participants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Failed");
+        alert("Registration Successful 🎉");
+        localStorage.clear();
+        window.location.href = "index.html";
+    })
+    .catch(() => alert("Something went wrong"));
+}
+</script>
+<script src="../JS/main.js"></script>
+</body>
+</html>
